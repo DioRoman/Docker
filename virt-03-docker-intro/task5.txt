@@ -1,0 +1,67 @@
+Задача 5
+
+1
+
+mkdir /task5
+
+touch /task5/compose.yaml
+touch /task5/docker-compose.yaml
+
+echo "version: \"3\"
+services:
+  registry:
+    image: registry:2
+
+    ports: 
+    - \"5000:5000\"" >> /task5/docker-compose.yaml
+
+mcedit /task5/compose.yaml
+mcedit /task5/docker-compose.yaml
+
+cd /task5
+
+docker compose up -d
+
+отработает каноничный формат названия
+
+2
+
+cat /dev/null > /task5/compose.yaml
+
+echo "version: \"3\"
+include:
+  - docker-compose.yaml
+services:
+  portainer:
+    network_mode: host
+    image: portainer/portainer-ce:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock" >> /task5/compose.yaml
+
+3
+
+docker run -d -p 5000:5000 --restart=always --name registry registry:2
+
+docker tag custom-nginx:1.0.0 localhost:5000/custom-nginx
+
+docker push localhost:5000/custom-nginx
+
+4 
+
+https://localhost:9443
+
+5
+
+https://localhost:9443/#!/home
+
+6
+
+https://localhost:9443/#!/2/docker/containers
+
+7
+
+rm /task5/compose.yaml
+
+docker compose up -d --remove-orphans
+
+docker compose stop

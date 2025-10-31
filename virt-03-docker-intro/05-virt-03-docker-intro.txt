@@ -1,0 +1,208 @@
+Задача 1
+
+Установка Docker
+
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+sudo docker run hello-world
+
+скачайте образ nginx:1.21.1
+
+docker pull nginx:1.21.1
+
+Создайте Dockerfile и реализуйте в нем замену дефолтной индекс-страницы(/usr/share/nginx/html/index.html), на файл index.html с содержимым:
+
+FROM nginx:1.21.1
+COPY index.html /usr/share/nginx/html/index.html
+
+Соберите и отправьте созданный образ в свой dockerhub-репозитории c tag 1.0.0 
+
+docker build -t custom-nginx:1.0.0 .
+
+docker push dioroman/custom-nginx:1.0.0
+
+
+Задача 2
+
+docker run -d -p 8080:80 --name custom-nginx-t2 custom-nginx:1.0.0 
+
+docker ps
+
+docker rename lrv-custom-nginx-t2 custom-nginx-t2
+
+docker ps
+
+
+Задача 3
+
+Воспользуйтесь docker help или google, чтобы узнать как подключиться к стандартному потоку ввода/вывода/ошибок контейнера "custom-nginx-t2".
+
+docker attach custom-nginx-t2
+
+Подключитесь к контейнеру и нажмите комбинацию Ctrl-C.
+
+Выполните docker ps -a и объясните своими словами почему контейнер остановился.
+
+docker ps -a
+
+Перезапустите контейнер
+
+docker start custom-nginx-t2
+
+Зайдите в интерактивный терминал контейнера "custom-nginx-t2" с оболочкой bash.
+
+docker exec -it custom-nginx-t2 /bin/bash
+
+Установите любимый текстовый редактор(vim, nano итд) с помощью apt-get.
+
+apt update
+
+apt-get install mc -y
+
+Отредактируйте файл "/etc/nginx/conf.d/default.conf", заменив порт "listen 80" на "listen 81".
+
+mcedit /etc/nginx/conf.d/default.conf
+
+Запомните(!) и выполните команду nginx -s reload, а затем внутри контейнера curl http://127.0.0.1:80 ; curl http://127.0.0.1:81.
+
+nginx -s reload
+curl http://127.0.0.1:80
+curl http://127.0.0.1:81
+
+Выйдите из контейнера, набрав в консоли exit или Ctrl-D.
+
+Проверьте вывод команд: ss -tlpn | grep 127.0.0.1:8080 , docker port custom-nginx-t2, curl http://127.0.0.1:8080. Кратко объясните суть возникшей проблемы.
+
+ss -tlpn | grep 127.0.0.1:8080
+docker port custom-nginx-t2
+curl http://127.0.0.1:8080
+Мы поменяли порт, чтобы все работало, нужно изменить команду запуска на 8080:81
+
+Это дополнительное, необязательное задание. Попробуйте самостоятельно исправить конфигурацию контейнера, используя доступные источники в интернете. Не изменяйте конфигурацию nginx и не удаляйте контейнер. Останавливать контейнер можно. пример источника
+
+Удалите запущенный контейнер "custom-nginx-t2", не останавливая его.(воспользуйтесь --help или google)
+
+docker rm --force custom-nginx-t2
+
+Задача 4
+
+Запустите первый контейнер из образа centos c любым тегом в фоновом режиме, подключив папку текущий рабочий каталог $(pwd) на хостовой машине в /data контейнера, используя ключ -v.
+
+docker run --name centos -v $(pwd):/data -d centos:8 tail -f /dev/null
+
+Запустите второй контейнер из образа debian в фоновом режиме, подключив текущий рабочий каталог $(pwd) в /data контейнера.
+
+docker run --name debian -v $(pwd):/data -d debian tail -f /dev/null
+
+Подключитесь к первому контейнеру с помощью docker exec и создайте текстовый файл любого содержания в /data.
+
+docker exec -it centos /bin/bash
+touch /data/1.txt
+
+Добавьте ещё один файл в текущий каталог $(pwd) на хостовой машине.
+
+touch 2.txt
+
+Подключитесь во второй контейнер и отобразите листинг и содержание файлов в /data контейнера.
+
+docker exec -it debian /bin/bash
+ls /data
+
+В качестве ответа приложите скриншоты консоли, где видно все введенные команды и их вывод.
+
+Задача 5
+
+1
+
+mkdir /task5
+
+touch /task5/compose.yaml
+touch /task5/docker-compose.yaml
+
+echo "version: \"3\"
+services:
+  registry:
+    image: registry:2
+
+    ports: 
+    - \"5000:5000\"" >> /task5/docker-compose.yaml
+
+mcedit /task5/compose.yaml
+mcedit /task5/docker-compose.yaml
+
+cd /task5
+
+docker compose up -d
+
+отработает каноничный формат названия
+
+2
+
+cat /dev/null > /task5/compose.yaml
+
+echo "version: \"3\"
+include:
+  - docker-compose.yaml
+services:
+  portainer:
+    network_mode: host
+    image: portainer/portainer-ce:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock" >> /task5/compose.yaml
+
+3
+
+docker run -d -p 5000:5000 --restart=always --name registry registry:2
+
+docker tag custom-nginx:1.0.0 localhost:5000/custom-nginx
+
+docker push localhost:5000/custom-nginx
+
+4 
+
+https://localhost:9443
+
+5
+
+https://localhost:9443/#!/home
+
+6
+
+https://localhost:9443/#!/2/docker/containers
+
+7
+
+rm /task5/compose.yaml
+
+docker compose up -d --remove-orphans
+
+docker compose stop
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,141 @@
+root@dioserver1:~# mkdir /task5
+root@dioserver1:~# touch /task5/compose.yaml
+touch /task5/docker-compose.yaml
+root@dioserver1:~# echo "version: \"3\"
+services:
+  registry:
+    image: registry:2
+
+    ports: 
+    - \"5000:5000\"" >> /task5/docker-compose.yaml
+
+mcedit /task5/compose.yaml
+mcedit /task5/docker-compose.yaml
+
+
+root@dioserver1:~# echo "version: \"3\"
+include:
+  - docker-compose.yaml
+services:
+  portainer:
+    network_mode: host
+    image: portainer/portainer-ce:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock" >> /task5/compose.yaml
+root@dioserver1:~# ^C
+root@dioserver1:~# mcedit /task5/docker-compose.yaml
+
+root@dioserver1:~# cd /task5
+
+docker compose up -d
+WARN[0000] Found multiple config files with supported names: /task5/compose.yaml, /task5/docker-compose.yaml 
+WARN[0000] Using /task5/compose.yaml                    
+WARN[0000] /task5/docker-compose.yaml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
+WARN[0000] /task5/compose.yaml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
+[+] Running 17/17
+ ✔ registry Pulled                                                                                                                                                                                                                                     19.5s 
+   ✔ 44cf07d57ee4 Pull complete                                                                                                                                                                                                                        15.9s 
+   ✔ bbbdd6c6894b Pull complete                                                                                                                                                                                                                        16.1s 
+   ✔ 8e82f80af0de Pull complete                                                                                                                                                                                                                        17.2s 
+   ✔ 3493bf46cdec Pull complete                                                                                                                                                                                                                        17.3s 
+   ✔ 6d464ea18732 Pull complete                                                                                                                                                                                                                        17.3s 
+ ✔ portainer Pulled                                                                                                                                                                                                                                    18.5s 
+   ✔ c02951246260 Pull complete                                                                                                                                                                                                                         0.8s 
+   ✔ b7c5ecc05946 Pull complete                                                                                                                                                                                                                         0.8s 
+   ✔ 04de093ad5ed Pull complete                                                                                                                                                                                                                         4.6s 
+   ✔ a9ff7abff372 Pull complete                                                                                                                                                                                                                         9.2s 
+   ✔ e09df2601140 Pull complete                                                                                                                                                                                                                        12.1s 
+   ✔ 54675ba571ac Pull complete                                                                                                                                                                                                                        12.1s 
+   ✔ 886c883b7538 Pull complete                                                                                                                                                                                                                        15.9s 
+   ✔ 93b4ed907f92 Pull complete                                                                                                                                                                                                                        16.1s 
+   ✔ f126cb2940fd Pull complete                                                                                                                                                                                                                        16.2s 
+   ✔ 4f4fb700ef54 Pull complete                                                                                                                                                                                                                        16.2s 
+[+] Running 3/3
+ ✔ Network task5_default        Created                                                                                                                                                                                                                 0.0s 
+ ✔ Container task5-registry-1   Started                                                                                                                                                                                                                 3.1s 
+ ✔ Container task5-portainer-1  Started                                                                                                                                                                                                                 3.0s 
+root@dioserver1:/task5# docker run -d -p 5000:5000 --restart=always --name registry registry:2
+7fcb1485be916fc6e36c3faec8359c8c3d7ccae3a383d7bf147a7d30d2d4e230
+docker: Error response from daemon: failed to set up container networking: driver failed programming external connectivity on endpoint registry (d6cbd8cf11952424e61865ad509cd9090d0f49679a84f06fa9673552a4edd24c): Bind for 0.0.0.0:5000 failed: port is already allocated
+
+Run 'docker run --help' for more information
+root@dioserver1:/task5# docker ps -a
+CONTAINER ID   IMAGE                           COMMAND                  CREATED          STATUS          PORTS                                         NAMES
+7fcb1485be91   registry:2                      "/entrypoint.sh /etc…"   22 seconds ago   Created                                                       registry
+f8b0941b084d   portainer/portainer-ce:latest   "/portainer"             37 seconds ago   Up 34 seconds                                                 task5-portainer-1
+582c16251ff3   registry:2                      "/entrypoint.sh /etc…"   37 seconds ago   Up 34 seconds   0.0.0.0:5000->5000/tcp, [::]:5000->5000/tcp   task5-registry-1
+65873a425fba   debian                          "tail -f /dev/null"      19 hours ago     Up 19 hours                                                   debian
+d34e901533f6   centos:8                        "tail -f /dev/null"      19 hours ago     Up 19 hours                                                   centos
+root@dioserver1:/task5# docker tag custom-nginx:1.0.0 localhost:5000/my-ubuntu
+
+docker push localhost:5000/custom-nginx
+
+docker tag custom-nginx:1.0.0 localhost:5000/custom-nginx
+Using default tag: latest
+The push refers to repository [localhost:5000/custom-nginx]
+An image does not exist locally with the tag: localhost:5000/custom-nginx
+root@dioserver1:/task5# docker images
+REPOSITORY                    TAG       IMAGE ID       CREATED         SIZE
+custom-nginx                  1.0.0     4dc608f13a43   23 hours ago    133MB
+localhost:5000/custom-nginx   latest    4dc608f13a43   23 hours ago    133MB
+localhost:5000/my-ubuntu      latest    4dc608f13a43   23 hours ago    133MB
+portainer/portainer-ce        latest    2a17f0992b45   6 days ago      268MB
+ubuntu                        latest    a0e45e2ce6e6   2 weeks ago     78.1MB
+debian                        latest    b2ab84c007fe   2 weeks ago     117MB
+debian                        stable    d53a9b353e15   2 weeks ago     117MB
+nginx                         latest    a830707172e8   4 weeks ago     192MB
+mysql                         latest    2c849dee4ca9   4 weeks ago     859MB
+hello-world                   latest    74cc54e27dc4   3 months ago    10.1kB
+registry                      2         26b2eb03618e   19 months ago   25.4MB
+centos                        8         5d0da3dc9764   3 years ago     231MB
+root@dioserver1:/task5# docker push localhost:5000/custom-nginx
+Using default tag: latest
+The push refers to repository [localhost:5000/custom-nginx]
+4313f9b9efb6: Pushed 
+d47e4d19ddec: Pushed 
+8e58314e4a4f: Pushed 
+ed94af62a494: Pushed 
+875b5b50454b: Pushed 
+63b5f2c0d071: Pushed 
+d000633a5681: Pushed 
+latest: digest: sha256:132d070711d049093e583015ea68297de29846e95f95dd6738746479e0ca9e78 size: 1777
+root@dioserver1:/task5# docker images
+REPOSITORY                    TAG       IMAGE ID       CREATED         SIZE
+custom-nginx                  1.0.0     4dc608f13a43   23 hours ago    133MB
+localhost:5000/custom-nginx   latest    4dc608f13a43   23 hours ago    133MB
+localhost:5000/my-ubuntu      latest    4dc608f13a43   23 hours ago    133MB
+portainer/portainer-ce        latest    2a17f0992b45   6 days ago      268MB
+ubuntu                        latest    a0e45e2ce6e6   2 weeks ago     78.1MB
+debian                        stable    d53a9b353e15   2 weeks ago     117MB
+debian                        latest    b2ab84c007fe   2 weeks ago     117MB
+nginx                         latest    a830707172e8   4 weeks ago     192MB
+mysql                         latest    2c849dee4ca9   4 weeks ago     859MB
+hello-world                   latest    74cc54e27dc4   3 months ago    10.1kB
+registry                      2         26b2eb03618e   19 months ago   25.4MB
+centos                        8         5d0da3dc9764   3 years ago     231MB
+root@dioserver1:/task5# docker ps -a
+CONTAINER ID   IMAGE                           COMMAND                  CREATED         STATUS         PORTS                                         NAMES
+7fcb1485be91   registry:2                      "/entrypoint.sh /etc…"   2 minutes ago   Created                                                      registry
+f8b0941b084d   portainer/portainer-ce:latest   "/portainer"             2 minutes ago   Up 2 minutes                                                 task5-portainer-1
+582c16251ff3   registry:2                      "/entrypoint.sh /etc…"   2 minutes ago   Up 2 minutes   0.0.0.0:5000->5000/tcp, [::]:5000->5000/tcp   task5-registry-1
+65873a425fba   debian                          "tail -f /dev/null"      19 hours ago    Up 19 hours                                                  debian
+d34e901533f6   centos:8                        "tail -f /dev/null"      19 hours ago    Up 19 hours                                                  centos
+root@dioserver1:/task5# docker compose up -d
+WARN[0000] Found multiple config files with supported names: /task5/compose.yaml, /task5/docker-compose.yaml 
+WARN[0000] Using /task5/compose.yaml                    
+WARN[0000] /task5/docker-compose.yaml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
+WARN[0000] /task5/compose.yaml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
+[+] Running 2/2
+ ✔ Container task5-registry-1   Running                                                                                                                                                                                                                 0.0s 
+ ✔ Container task5-portainer-1  Running                                                                                                                                                                                                                 0.0s 
+root@dioserver1:/task5# rm /task5/compose.yaml
+root@dioserver1:/task5# docker compose up -d --remove-orphans
+WARN[0002] /task5/docker-compose.yaml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
+[+] Running 2/2
+ ✔ Container task5-portainer-1  Removed                                                                                                                                                                                                                 0.2s 
+ ✔ Container task5-registry-1   Running                                                                                                                                                                                                                 0.0s 
+root@dioserver1:/task5# docker compose stop
+WARN[0000] /task5/docker-compose.yaml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
+[+] Stopping 1/1
+ ✔ Container task5-registry-1  Stopped                                                                                                                                                                                                                  7.5s 
+root@dioserver1:/task5# 
