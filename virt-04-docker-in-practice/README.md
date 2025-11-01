@@ -1,4 +1,4 @@
-# 05-virt-04-docker-in-practice
+<img width="874" height="153" alt="447670514-01469ac0-829a-4a38-818b-f35e26731c43" src="https://github.com/user-attachments/assets/492d5a3b-2a0d-4eda-b7ef-a88f5b6a7548" /># 05-virt-04-docker-in-practice
 
 ## Задача 1
 
@@ -40,7 +40,7 @@ echo "*
 
 `docker push cr.yandex/crptcho4q9mntnhcce91/shvirtd-example-python:new`
 
-![Снимок экрана 2025-05-24 134418](https://github.com/user-attachments/assets/755ca11d-e59a-4e6d-9a19-4f2af8fd1f49)
+<img width="1203" height="215" alt="447259519-755ca11d-e59a-4e6d-9a19-4f2af8fd1f49" src="https://github.com/user-attachments/assets/70ec47e4-4a2a-4269-ac88-f954538919c5" />
 
 ## Задача 3
 
@@ -55,7 +55,7 @@ use virtd;
 show tables; 
 SELECT * from requests LIMIT 10;
 ```
-![Снимок экрана 2025-05-24 134910](https://github.com/user-attachments/assets/1b935db2-f93a-457d-8bf3-e94f44755d5f)
+<img width="707" height="864" alt="447259642-1b935db2-f93a-457d-8bf3-e94f44755d5f" src="https://github.com/user-attachments/assets/b21c0da1-7862-4b25-84b4-9a7d115b0e3b" />
 
 ## Задача 4 
 
@@ -74,7 +74,7 @@ docker compose -f /opt/shvirtd-example-python/compose.yaml up -d" >> run.sh
 
 `curl -L http://158.160.176.117:8090`
 
-![Снимок экрана 2025-05-24 151302](https://github.com/user-attachments/assets/f47d0699-d48c-4371-a28c-8b495b9ff48f)
+<img width="518" height="1030" alt="447260006-f47d0699-d48c-4371-a28c-8b495b9ff48f" src="https://github.com/user-attachments/assets/7bf2e8b7-1bba-4bcc-a1f5-4f3dd6acdc3b" />
 
 ## Задача 6
 
@@ -94,8 +94,9 @@ sudo apt install ./dive_${DIVE_VERSION}_linux_amd64.deb
 
 `tar xf e0f55b34ca5dc362ab5757d39045589d45aaa6ffe70a3bb2d88b2939592a5806`
 
-![Снимок экрана 2025-05-24 160424](https://github.com/user-attachments/assets/e63e6968-8610-4cf9-a743-efc031c0272b)
-![Снимок экрана 2025-05-24 165213](https://github.com/user-attachments/assets/f6f49fa6-3ea8-474a-a7af-ef7d8242f871)
+<img width="2559" height="1279" alt="447260064-e63e6968-8610-4cf9-a743-efc031c0272b" src="https://github.com/user-attachments/assets/5672d7eb-17c9-4729-818c-dedfaedd3369" />
+
+<img width="2150" height="1186" alt="447260092-f6f49fa6-3ea8-474a-a7af-ef7d8242f871" src="https://github.com/user-attachments/assets/4b49d417-5ad9-4310-ba84-ea256fb92ff5" />
 
 ## Задача 6.1
 
@@ -107,6 +108,6 @@ sudo apt install ./dive_${DIVE_VERSION}_linux_amd64.deb
 
 `ls -all | grep terra`
 
-![Снимок экрана 2025-05-26 220902](https://github.com/user-attachments/assets/01469ac0-829a-4a38-818b-f35e26731c43)
+<img width="874" height="153" alt="447670514-01469ac0-829a-4a38-818b-f35e26731c43" src="https://github.com/user-attachments/assets/abaf66c1-b7c3-4047-80ec-7cb74caf1822" />
 
 
